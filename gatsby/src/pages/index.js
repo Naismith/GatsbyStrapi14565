@@ -35,7 +35,7 @@ export const pageQuery = graphql`
     }
 
     NotEqualArticles: allStrapiArticle(
-      filter: { tags: { elemMatch: { tag: { ne: ["Featured"] } } } }
+      filter: { tags: { elemMatch: { tag: { ne: "Featured" } } } }
     ) {
       nodes {
         id
