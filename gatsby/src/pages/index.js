@@ -1,21 +1,49 @@
 import React from "react"
-import { Link } from "gatsby"
-
+import { graphql } from "gatsby"
 import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
 
-const IndexPage = () => (
+const IndexPage = ({ data: { NotInArticles, NotEqualArticles } }) => (
   <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
+    <h1>Filter using not in</h1>
+    {NotInArticles.nodes.map(node => {
+      const tags = node.tags.map(({ tag }) => tag).join(", ")
+      return <div key={node.id}>{`${node.title} - Tags: ${tags}`}</div>
+    })}
+
+    <h1>Filter using not equal</h1>
+    {NotEqualArticles.nodes.map(node => {
+      const tags = node.tags.map(({ tag }) => tag).join(", ")
+      return <div key={node.id}>{`${node.title} - Tags: ${tags}`}</div>
+    })}
   </Layout>
 )
 
 export default IndexPage
+
+export const pageQuery = graphql`
+  query {
+    NotInArticles: allStrapiArticle(
+      filter: { tags: { elemMatch: { tag: { nin: ["Featured"] } } } }
+    ) {
+      nodes {
+        id
+        title
+        tags {
+          tag
+        }
+      }
+    }
+
+    NotEqualArticles: allStrapiArticle(
+      filter: { tags: { elemMatch: { tag: { nin: ["Featured"] } } } }
+    ) {
+      nodes {
+        id
+        title
+        tags {
+          tag
+        }
+      }
+    }
+  }
+`
